@@ -1,9 +1,33 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
-[ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource path="res://Icon/icon.png" type="Texture" id=1]
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="GDScript" id=1]
+script/source = "extends KinematicBody2D
+
+export (int) var speed
+var motion = Vector2(0, 0)
+
+func _ready():
+	set_process(true)
+	
+func _process(delta):
+	if Input.is_action_pressed(\"ui_up\"):
+		motion.y -= speed * delta 
+	elif Input.is_action_pressed(\"ui_down\"):
+		motion.y += speed * delta
+	elif Input.is_action_pressed(\"ui_left\"):
+		motion.x -= speed * delta
+	elif Input.is_action_pressed(\"ui_right\"):
+		motion.x += speed * delta
+	else:
+		motion.x = 0
+		motion.y = 0
+		
+	motion = move_and_slide(motion)
+"
+
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 32.1146, 31.4709 )
 
 [node name="World" type="Node2D"]
@@ -11,11 +35,11 @@ position = Vector2( 509.861, 322.652 )
 
 [node name="Player" type="KinematicBody2D" parent="."]
 position = Vector2( 0, -3 )
-script = ExtResource( 2 )
+script = SubResource( 1 )
 speed = 5000
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="Player"]
 texture = ExtResource( 1 )
